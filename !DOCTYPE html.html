@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>摇摆的小猫</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cat-container {
+            position: relative;
+            width: 300px;
+            height: 350px;
+            margin: 0 auto 30px;
+        }
+        
+        /* 小猫样式 */
+        .cat {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            transform-origin: center bottom;
+            animation: swing 3s ease-in-out infinite;
+        }
+        
+        /* 小猫头部 */
+        .cat-head {
+            position: relative;
+            width: 150px;
+            height: 130px;
+            background: #ffa500;
+            border-radius: 50% 50% 45% 45%;
+            margin: 0 auto;
+            z-index: 2;
+        }
+        
+        /* 小猫耳朵 */
+        .cat-ear {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid #ffa500;
+            top: -20px;
+            z-index: 1;
+        }
+        
+        .cat-ear.left {
+            left: 15px;
+            transform: rotate(-15deg);
+        }
+        
+        .cat-ear.right {
+            right: 15px;
+            transform: rotate(15deg);
+        }
+        
+        .cat-ear-inner {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 25px solid #ff8c00;
+            top: 8px;
+            left: -10px;
+        }
+        
+        /* 小猫脸部 */
+        .cat-face {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            background: #ffb74d;
+            border-radius: 50%;
+            top: 30px;
+            left: 15px;
+        }
+        
+        /* 小猫眼睛 */
+        .cat-eye {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            background: #000;
+            border-radius: 50%;
+            top: 40px;
+            animation: blink 5s infinite;
+        }
+        
+        .cat-eye.left {
+            left: 35px;
+        }
+        
+        .cat-eye.right {
+            right: 35px;
+        }
+        
+        .cat-eye::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+        }
+        
+        /* 小猫鼻子 */
+        .cat-nose {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #ff69b4;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 65px;
+            left: 67px;
+        }
+        
+        /* 小猫嘴巴 */
+        .cat-mouth {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            border-bottom: 2px solid #000;
+            border-radius: 0 0 50% 50%;
+            top: 75px;
+            left: 65px;
+        }
+        
+        /* 小猫身体 */
+        .cat-body {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            background: #ffa500;
+            border-radius: 50% 50% 40% 40%;
+            top: 120px;
+            left: 40px;
+            z-index: 1;
+        }
+        
+        /* 小猫爪子 */
+        .cat-paw {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            background: #ffa500;
+            border-radius: 50%;
+            top: 200px;
+            z-index: 0;
+        }
+        
+        .cat-paw.left {
+            left: 50px;
+            transform: rotate(-20deg);
+        }
+        
+        .cat-paw.right {
+            right: 50px;
+            transform: rotate(20deg);
+        }
+        
+        /* 小猫尾巴 */
+        .cat-tail {
+            position: absolute;
+            width: 80px;
+            height: 20px;
+            background: #ffa500;
+            border-radius: 10px;
+            top: 150px;
+            right: 10px;
+            transform-origin: left center;
+            animation: tailWag 2s ease-in-out infinite;
+            z-index: 0;
+        }
+        
+        /* 摇摆动画 */
+        @keyframes swing {
+            0%, 100% {
+                transform: rotate(-5deg);
+            }
+            50% {
+                transform: rotate(5deg);
+            }
+        }
+        
+        /* 尾巴摇摆动画 */
+        @keyframes tailWag {
+            0%, 100% {
+                transform: rotate(-10deg);
+            }
+            50% {
+                transform: rotate(10deg);
+            }
+        }
+        
+        /* 眨眼动画 */
+        @keyframes blink {
+            0%, 94%, 96%, 100% {
+                height: 35px;
+            }
+            95%, 97% {
+                height: 5px;
+            }
+        }
+        
+        /* 控制面板 */
+        .controls {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slider-container {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            color: white;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background: #ff8c00;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            background: #ff6a00;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .info {
+            color: white;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>摇摆的小猫</h1>
+        
+        <div class="cat-container">
+            <div class="cat">
+                <!-- 小猫耳朵 -->
+                <div class="cat-ear left">
+                    <div class="cat-ear-inner"></div>
+                </div>
+                <div class="cat-ear right">
+                    <div class="cat-ear-inner"></div>
+                </div>
+                
+                <!-- 小猫头部 -->
+                <div class="cat-head">
+                    <div class="cat-face">
+                        <!-- 小猫眼睛 -->
+                        <div class="cat-eye left"></div>
+                        <div class="cat-eye right"></div>
+                        
+                        <!-- 小猫鼻子 -->
+                        <div class="cat-nose"></div>
+                        
+                        <!-- 小猫嘴巴 -->
+                        <div class="cat-mouth"></div>
+                    </div>
+                </div>
+                
+                <!-- 小猫身体 -->
+                <div class="cat-body"></div>
+                
+                <!-- 小猫爪子 -->
+                <div class="cat-paw left"></div>
+                <div class="cat-paw right"></div>
+                
+                <!-- 小猫尾巴 -->
+                <div class="cat-tail"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="slider-container">
+                <label for="speed">摇摆速度</label>
+                <input type="range" id="speed" min="1" max="10" value="3">
+            </div>
+            
+            <div class="slider-container">
+                <label for="angle">摇摆角度</label>
+                <input type="range" id="angle" min="1" max="10" value="5">
+            </div>
+            
+            <div class="buttons">
+                <button id="startBtn">开始摇摆</button>
+                <button id="stopBtn">暂停摇摆</button>
+            </div>
+        </div>
+        
+        <div class="info">
+            <p>这只可爱的小猫正在快乐地摇摆！你可以调整摇摆的速度和角度，或者暂停/开始动画。</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cat = document.querySelector('.cat');
+            const tail = document.querySelector('.cat-tail');
+            const speedSlider = document.getElementById('speed');
+            const angleSlider = document.getElementById('angle');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            // 设置初始动画速度
+            let animationSpeed = 3;
+            let animationAngle = 5;
+            
+            // 更新摇摆速度
+            speedSlider.addEventListener('input', function() {
+                animationSpeed = parseInt(this.value);
+                updateAnimation();
+            });
+            
+            // 更新摇摆角度
+            angleSlider.addEventListener('input', function() {
+                animationAngle = parseInt(this.value);
+                updateAnimation();
+            });
+            
+            // 开始动画
+            startBtn.addEventListener('click', function() {
+                cat.style.animationPlayState = 'running';
+                tail.style.animationPlayState = 'running';
+            });
+            
+            // 暂停动画
+            stopBtn.addEventListener('click', function() {
+                cat.style.animationPlayState = 'paused';
+                tail.style.animationPlayState = 'paused';
+            });
+            
+            // 更新动画函数
+            function updateAnimation() {
+                // 暂停动画以应用更改
+                const wasRunning = cat.style.animationPlayState !== 'paused';
+                cat.style.animationPlayState = 'paused';
+                tail.style.animationPlayState = 'paused';
+                
+                // 更新小猫摇摆动画
+                cat.style.animation = `swing ${4 - animationSpeed/3}s ease-in-out infinite`;
+                
+                // 更新尾巴摇摆动画
+                tail.style.animation = `tailWag ${3 - animationSpeed/4}s ease-in-out infinite`;
+                
+                // 更新摇摆角度
+                document.styleSheets[0].insertRule(`
+                    @keyframes swing {
+                        0%, 100% { transform: rotate(-${animationAngle}deg); }
+                        50% { transform: rotate(${animationAngle}deg); }
+                    }
+                `, document.styleSheets[0].cssRules.length);
+                
+                // 如果之前是运行状态，则恢复动画
+                if (wasRunning) {
+                    setTimeout(() => {
+                        cat.style.animationPlayState = 'running';
+                        tail.style.animationPlayState = 'running';
+                    }, 10);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
